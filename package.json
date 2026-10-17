@@ -48,7 +48,9 @@
     "android": "expo run:android --device",
     "test": "jest",
     "typecheck": "tsc --noEmit",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "test:rls": "node scripts/rls-test.mjs",
+    "supabase": "bash scripts/sb.sh"
   },
   "private": true,
   "jest": {
