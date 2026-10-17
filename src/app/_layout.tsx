@@ -9,6 +9,7 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { SnackHost } from '@/components/Feedback';
+import { RingingOverlay } from '@/components/RingingOverlay';
 import { Splash } from '@/components/Splash';
 import { useProfile } from '@/data/selectors';
 import { initSession, useSession } from '@/data/session';
@@ -84,6 +85,7 @@ export default function RootLayout() {
         </Stack>
         {session && dataReady && <AppEffects />}
         <SnackHost />
+        <RingingOverlay />
         {(!ready || minSplash) && <Splash caption={session && !dataReady ? 'Loading your streaks…' : undefined} />}
       </SafeAreaProvider>
     </GestureHandlerRootView>

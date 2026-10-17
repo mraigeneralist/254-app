@@ -2,7 +2,7 @@
   "expo": {
     "name": "254",
     "slug": "app-254",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,10 +21,11 @@
       "package": "com.mraigeneralist.app254",
       "permissions": [
         "android.permission.POST_NOTIFICATIONS",
-        "android.permission.VIBRATE",
-        "android.permission.SCHEDULE_EXACT_ALARM"
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.USE_EXACT_ALARM"
       ],
-      "softwareKeyboardLayoutMode": "resize"
+      "softwareKeyboardLayoutMode": "resize",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -47,7 +48,13 @@
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#9BB167"
+          "color": "#9BB167",
+          "sounds": [
+            "./assets/sounds/bell_bowl.wav",
+            "./assets/sounds/bell_gong.wav",
+            "./assets/sounds/bell_chimes.wav",
+            "./assets/sounds/bell_marimba.wav"
+          ]
         }
       ],
       "expo-asset",

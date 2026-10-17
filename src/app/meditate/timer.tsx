@@ -1,5 +1,3 @@
-import { createAudioPlayer } from 'expo-audio';
-import * as Haptics from 'expo-haptics';
 import { useKeepAwake } from 'expo-keep-awake';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -9,7 +7,8 @@ import { IconButton, ProgressRing } from '@/components/ds';
 import { Dialog } from '@/components/Feedback';
 import { addMeditationSession } from '@/data/actions';
 import { toDateKey } from '@/domain/dates';
-import { elapsedMs, minutesToSave, pauseTimer, remainingMs, resumeTimer, stopTimer, useTimer, type TimerState } from '@/features/meditation';
+import { elapsedMs, finishTimer, minutesToSave, pauseTimer, remainingMs, resumeTimer, stopTimer, useTimer, type TimerState } from '@/features/meditation';
+import { bellById, playBell } from '@/features/bells';
 import { useStatusBarStyle } from '@/hooks/useStatusBarStyle';
 import { colors, font, text } from '@/theme';
 
@@ -18,15 +17,6 @@ const fmt = (ms: number) => {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 };
 
-function playChime() {
-  try {
-    const p = createAudioPlayer(require('../../../assets/sounds/chime.wav'));
-    p.play();
-    setTimeout(() => p.remove(), 6000);
-  } catch {
-    // sound is a nice-to-have
-  }
-}
 
 function save(t: TimerState, minutes: number) {
   addMeditationSession({ date: toDateKey(new Date(t.startedAt)), started_at: new Date(t.startedAt).toISOString(), planned_minutes: t.plannedMin, actual_minutes: minutes });
@@ -54,11 +44,12 @@ export default function TimerScreen() {
     if (!timer || finishing.current || timer.endAt === null || remainingMs(timer, now) > 0) return;
     finishing.current = true;
     (async () => {
-      const t = await stopTimer();
+      const t = finishTimer();
       if (!t) return;
       save(t, t.plannedMin);
-      playChime();
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      // The scheduled end alarm rings the bell. Only if there is none (notifications off) and we're
+      // finishing live (not returning long after the end), play the bell from the app instead.
+      if (!t.notifId && t.endAt !== null && Date.now() - t.endAt < 5000) playBell(bellById(t.sound).id);
       router.replace({ pathname: '/meditate/done', params: { min: String(t.plannedMin), at: String(t.startedAt) } });
     })();
   }, [timer, now, router]);

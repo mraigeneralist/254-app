@@ -3,12 +3,16 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { Button, Icon, SectionHeader } from '@/components/ds';
 import { Banner, EmptyState } from '@/components/Feedback';
+import { BellPicker } from '@/components/BellPicker';
 import { MinutePickerSheet } from '@/components/Pickers';
 import { StatusBarScrim } from '@/components/StatusBarScrim';
 import { useTabBarHeight } from '@/components/TabBar';
 import { TabTitle } from '@/components/TabTitle';
+import { updateSettings } from '@/data/actions';
+import { useSettings } from '@/data/selectors';
 import { live, useData } from '@/data/store';
 import { addDays, weekdayMon0 } from '@/domain/dates';
+import { bellById } from '@/features/bells';
 import { remainingMs, startTimer, useTimer } from '@/features/meditation';
 import { requestPermission, usePermission } from '@/features/notifications';
 import { useToday } from '@/hooks/useToday';
@@ -27,6 +31,8 @@ export default function MeditateScreen() {
   const [sel, setSel] = useState<(typeof PRESETS)[number]>('10');
   const [customMin, setCustomMin] = useState(25);
   const [sheet, setSheet] = useState(false);
+  const [bellSheet, setBellSheet] = useState(false);
+  const bell = bellById(useSettings().meditationSound);
   const minutes = sel === 'Custom' ? customMin : Number(sel);
 
   const sessions = useMemo(() => live(rows).sort((a, b) => b.started_at.localeCompare(a.started_at)), [rows]);
@@ -36,7 +42,7 @@ export default function MeditateScreen() {
 
   const start = async () => {
     if (permission === 'undetermined') await requestPermission().catch(() => undefined);
-    await startTimer(minutes);
+    await startTimer(minutes, bell.id);
     router.push('/meditate/timer');
   };
 
@@ -77,6 +83,16 @@ export default function MeditateScreen() {
           <Button variant="accent" size="lg" fullWidth iconLeft="play" style={{ marginTop: 16 }} onPress={start} disabled={!!timer}>
             {`Start · ${minutes} min`}
           </Button>
+          <Pressable onPress={() => setBellSheet(true)} accessibilityRole="button" style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 18, backgroundColor: colors.surfaceCard, boxShadow: shadow.xs }}>
+            <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: colors.green100, alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name="bell-ring" size={18} color={colors.green600} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={text.t}>Bell sound</Text>
+              <Text style={text.cap}>{`${bell.label} · rings until you tap Stop`}</Text>
+            </View>
+            <Icon name="chevron-right" size={18} color={colors.brown300} />
+          </Pressable>
           <View style={{ flexDirection: 'row', gap: 8, marginTop: 18 }}>
             {[
               [num(weekMin), 'min this week'],
@@ -113,6 +129,7 @@ export default function MeditateScreen() {
         </View>
       </ScrollView>
       <StatusBarScrim />
+      <BellPicker visible={bellSheet} value={bell.id} onClose={() => setBellSheet(false)} onChange={(id) => updateSettings({ meditationSound: id })} />
       <MinutePickerSheet
         visible={sheet}
         value={customMin}

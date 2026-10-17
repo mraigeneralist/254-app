@@ -17,7 +17,7 @@ export type PermissionState = 'granted' | 'denied' | 'undetermined';
 export const usePermission = create<{ status: PermissionState }>(() => ({ status: 'undetermined' }));
 
 const CH_REMINDERS = 'reminders';
-const CH_MEDITATION = 'meditation';
+const CH_MEDITATION = 'meditation-bell';
 export const CATEGORY_HABIT = 'habit-reminder';
 export const ACTION_MARK_DONE = 'mark-done';
 const OUR_KINDS = new Set(['habit', 'task', 'summary']);
@@ -38,12 +38,18 @@ export async function setupNotifications() {
       importance: Notifications.AndroidImportance.HIGH,
       lightColor: '#9BB167',
     });
+    // Channel sound/usage can't be changed after creation, so the bell lives on a new channel id.
+    await Notifications.deleteNotificationChannelAsync('meditation').catch(() => undefined);
     await Notifications.setNotificationChannelAsync(CH_MEDITATION, {
       name: 'Meditation timer',
-      description: 'Tells you when a meditation session ends',
-      importance: Notifications.AndroidImportance.HIGH,
-      vibrationPattern: [0, 300, 200, 300],
+      description: 'Rings the bell when a meditation session ends',
+      importance: Notifications.AndroidImportance.MAX,
+      sound: 'bell_bowl.wav',
+      // alarm stream: rings like the Clock app's timer — at alarm volume, even with the ringer on silent
+      audioAttributes: { usage: Notifications.AndroidAudioUsage.ALARM, contentType: Notifications.AndroidAudioContentType.SONIFICATION },
+      enableVibrate: false,
       lightColor: '#9BB167',
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
     });
   }
   await Notifications.setNotificationCategoryAsync(CATEGORY_HABIT, [
@@ -202,11 +208,18 @@ export async function cancelAllReminders() {
 
 // ─── meditation ─────────────────────────────────────────────────────────────
 
-export async function scheduleMeditationEnd(endAt: number, minutes: number): Promise<string | null> {
+export async function scheduleMeditationEnd(endAt: number, minutes: number, bell = 'bowl'): Promise<string | null> {
   if (usePermission.getState().status !== 'granted') return null;
   return Notifications.scheduleNotificationAsync({
-    content: { title: 'Session complete', body: `${minutes} min of stillness. Nice work.`, sound: true, data: { kind: 'meditation', url: '/meditate' } },
-    trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: new Date(endAt), channelId: CH_MEDITATION },
+    content: {
+      title: 'Session complete',
+      body: `${minutes} min of stillness. Nice work.`,
+      sound: `bell_${bell}.wav`,
+      priority: Notifications.AndroidNotificationPriority.MAX,
+      data: { kind: 'meditation', url: '/meditate' },
+    },
+    // alarm-clock delivery: Android never defers it (unlike regular scheduled notifications)
+    trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: new Date(endAt), channelId: CH_MEDITATION, delivery: 'alarmClock' },
   });
 }
 

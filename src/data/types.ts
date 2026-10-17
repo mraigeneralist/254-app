@@ -22,6 +22,8 @@ export type NotificationSettings = {
   summaryEnabled: boolean;
   summaryTime: string; // HH:MM
   milestoneAlerts: boolean;
+  /** meditation end bell: bowl | gong | chimes | marimba */
+  meditationSound: string;
 };
 
 export const DEFAULT_SETTINGS: NotificationSettings = {
@@ -33,6 +35,7 @@ export const DEFAULT_SETTINGS: NotificationSettings = {
   summaryEnabled: true,
   summaryTime: '21:00',
   milestoneAlerts: true,
+  meditationSound: 'bowl',
 };
 
 export type Profile = Omit<Base, 'user_id'> & {
