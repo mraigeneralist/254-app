@@ -1,7 +1,10 @@
+import type { Ref } from 'react';
+import type { ViewRef } from './Tour';
 import { Pressable, Text, View } from 'react-native';
+import Animated, { ZoomIn } from 'react-native-reanimated';
 import { Badge, Button, Icon, type IconName } from '@/components/ds';
 import { GOAL_DAYS, nextMilestone } from '@/domain/milestones';
-import { colors, font, kindTone, ring, shadow, text, tones, type HabitKind } from '@/theme';
+import { colors, easing, font, kindTone, ring, shadow, text, tones, type HabitKind } from '@/theme';
 import { ProgressBar } from './ProgressBar';
 
 export type HabitCardItem = { id: string; name: string; day: number; icon: IconName; total?: number };
@@ -15,9 +18,11 @@ type Props = {
   onPress?: () => void;
   onCheckIn?: () => void;
   onUndo?: () => void;
+  /** tour spotlight target for the check-in control */
+  actionRef?: Ref<ViewRef>;
 };
 
-export function HabitCard({ item, kind = 'build', done, ring: ringed, onPress, onCheckIn, onUndo }: Props) {
+export function HabitCard({ item, kind = 'build', done, ring: ringed, onPress, onCheckIn, onUndo, actionRef }: Props) {
   const tn = kindTone[kind];
   const t = tones[tn];
   const total = kind === 'challenge' ? (item.total ?? 30) : GOAL_DAYS;
@@ -25,13 +30,8 @@ export function HabitCard({ item, kind = 'build', done, ring: ringed, onPress, o
   const sub = kind === 'challenge' ? `${total - item.day} days left` : `Next: ${nextMilestone(item.day)} days`;
 
   return (
-    <View
-      style={{
-        backgroundColor: colors.surfaceCard, borderRadius: 24, padding: 16,
-        boxShadow: ringed ? `${ring(3, colors.green300)}, ${shadow.md}` : shadow.sm,
-      }}
-    >
-      <Pressable onPress={onPress} style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }} accessibilityRole="button">
+    <View style={{ backgroundColor: colors.surfaceCard, borderRadius: 24, padding: 16, boxShadow: ringed ? `${ring(3, colors.green300)}, ${shadow.md}` : shadow.sm }}>
+      <Pressable onPress={onPress} style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={`${item.name}, ${dayTxt}`}>
         <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: t.t, alignItems: 'center', justifyContent: 'center' }}>
           <Icon name={item.icon} size={20} color={t.d} />
         </View>
@@ -49,16 +49,18 @@ export function HabitCard({ item, kind = 'build', done, ring: ringed, onPress, o
           <Icon name={kind === 'challenge' ? 'calendar-days' : 'flag'} size={14} color={colors.textSecondary} />
           <Text style={text.cap} numberOfLines={1}>{sub}</Text>
         </View>
-        {done ? (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Badge tone={tn} icon="check">{kind === 'break' ? 'Clean today' : 'Done today'}</Badge>
-            <Pressable onPress={onUndo} hitSlop={10} accessibilityRole="button">
-              <Text style={[font(700, 12), { color: colors.textSecondary, textDecorationLine: 'underline' }]}>Undo</Text>
-            </Pressable>
-          </View>
-        ) : (
-          <Button size="sm" onPress={onCheckIn}>{kind === 'break' ? 'I stayed clean today' : 'Mark done'}</Button>
-        )}
+        <View ref={actionRef} collapsable={false}>
+          {done ? (
+            <Animated.View entering={ZoomIn.duration(260).easing(easing.spring)} style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Badge tone={tn} icon="check">{kind === 'break' ? 'Clean today' : 'Done today'}</Badge>
+              <Pressable onPress={onUndo} hitSlop={12} accessibilityRole="button" accessibilityLabel="Undo today's check-in">
+                <Text style={[font(700, 12), { color: colors.textSecondary, textDecorationLine: 'underline' }]}>Undo</Text>
+              </Pressable>
+            </Animated.View>
+          ) : (
+            <Button size="sm" onPress={onCheckIn}>{kind === 'break' ? 'I stayed clean today' : 'Mark done'}</Button>
+          )}
+        </View>
       </View>
     </View>
   );

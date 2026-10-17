@@ -5,3 +5,7 @@ export * from './IconButton';
 export * from './Badge';
 export * from './Avatar';
 export * from './SegmentedControl';
+export * from './Card';
+export * from './SectionHeader';
+export * from './ProgressRing';
+export * from './BarChart';

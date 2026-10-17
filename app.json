@@ -23,7 +23,8 @@
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.VIBRATE",
         "android.permission.SCHEDULE_EXACT_ALARM"
-      ]
+      ],
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -37,7 +38,7 @@
         {
           "backgroundColor": "#4F3422",
           "image": "./assets/splash-icon.png",
-          "imageWidth": 120
+          "imageWidth": 200
         }
       ],
       "expo-sqlite",
@@ -45,6 +46,7 @@
       [
         "expo-notifications",
         {
+          "icon": "./assets/notification-icon.png",
           "color": "#9BB167"
         }
       ],
