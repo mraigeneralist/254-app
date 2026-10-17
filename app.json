@@ -58,7 +58,8 @@
           "cameraPermission": false,
           "microphonePermission": false
         }
-      ]
+      ],
+      "./plugins/withLowMemoryGradle"
     ],
     "scheme": "two54",
     "backgroundColor": "#F7F4F2",
