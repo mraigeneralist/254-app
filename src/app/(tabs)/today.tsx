@@ -15,6 +15,7 @@ import { restartChallenge } from '@/data/actions';
 import { useChallengeViews, useHabitViews, useProfile } from '@/data/selectors';
 import { useSync } from '@/data/sync';
 import { challengeIcon, doChallengeCheckIn, doChallengeUndo, doHabitCheckIn, doHabitUndo, habitIcon } from '@/features/checkins';
+import { useMyAvatarUrl } from '@/features/avatar';
 import { useMissedQueue } from '@/features/missed';
 import { useToday } from '@/hooks/useToday';
 import { longDate } from '@/lib/format';
@@ -24,6 +25,7 @@ export default function TodayScreen() {
   const router = useRouter();
   const today = useToday();
   const profile = useProfile();
+  const avatarUri = useMyAvatarUrl();
   const habits = useHabitViews(today);
   const challenges = useChallengeViews(today);
   const online = useSync((s) => s.online);
@@ -77,7 +79,7 @@ export default function TodayScreen() {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView ref={scrollRef} contentContainerStyle={{ paddingBottom: tabBar }} showsVerticalScrollIndicator={false}>
-        <TodayHeader dateLabel={longDate(today)} name={profile.name} segment={segment} onSegment={setSegment} summary={summary} status={<SyncStatus />} onBell={() => router.push('/settings/notifications')} />
+        <TodayHeader dateLabel={longDate(today)} name={profile.name} segment={segment} onSegment={setSegment} summary={summary} status={<SyncStatus />} avatarUri={avatarUri} onBell={() => router.push('/settings/notifications')} />
         <View style={{ paddingTop: 16, paddingHorizontal: 20, paddingBottom: 120, gap: 12 }}>
           {!online && <Banner text="You’re offline — check-ins will sync when you’re back" />}
 

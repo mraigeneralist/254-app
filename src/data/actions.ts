@@ -8,7 +8,7 @@ import type { Challenge, Habit, HabitKind, MeditationSession, Note, Notification
 
 // ─── profile ────────────────────────────────────────────────────────────────
 
-export function updateProfile(patch: Partial<Pick<Profile, 'name' | 'onboarding_completed' | 'settings'>>) {
+export function updateProfile(patch: Partial<Pick<Profile, 'name' | 'onboarding_completed' | 'settings' | 'avatar_path'>>) {
   const { userId, tables } = useData.getState();
   if (!userId) return;
   const existing = tables.profiles[userId];

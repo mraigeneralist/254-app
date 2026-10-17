@@ -50,7 +50,15 @@
           "color": "#9BB167"
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "254 uses your photos so you can choose a profile picture.",
+          "cameraPermission": false,
+          "microphonePermission": false
+        }
+      ]
     ],
     "scheme": "two54",
     "backgroundColor": "#F7F4F2",

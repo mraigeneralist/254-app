@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import {
-  Apple, ArrowRight, Award, BadgeCheck, Bath, Bed, Beer, Bell, BellOff, BellRing, Bike, BookOpen, Brain, Calendar,
+  Apple, ArrowRight, Camera, ImagePlus, Award, BadgeCheck, Bath, Bed, Beer, Bell, BellOff, BellRing, Bike, BookOpen, Brain, Calendar,
   CalendarDays, Candy, ChartColumn, Check, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Cigarette, CircleAlert,
   CircleCheck, Clock, CloudOff, Code, Coffee, Cookie, CornerDownLeft, Dog, Droplets, Dumbbell, Eye, EyeOff, Flag, Flame,
   Flower2, Footprints, Gamepad2, GlassWater, HandHeart, Heart, Hourglass, Info, Languages, Leaf, ListTodo, LoaderCircle,
@@ -15,7 +15,7 @@ import { colors } from '@/theme';
 const ICONS = {
   apple: Apple, 'arrow-right': ArrowRight, award: Award, 'badge-check': BadgeCheck, bath: Bath, bed: Bed, beer: Beer,
   bell: Bell, 'bell-off': BellOff, 'bell-ring': BellRing, bike: Bike, 'book-open': BookOpen, brain: Brain,
-  calendar: Calendar, 'calendar-days': CalendarDays, candy: Candy, 'chart-column': ChartColumn, check: Check,
+  calendar: Calendar, camera: Camera, 'image-plus': ImagePlus, 'calendar-days': CalendarDays, candy: Candy, 'chart-column': ChartColumn, check: Check,
   'chevron-down': ChevronDown, 'chevron-left': ChevronLeft, 'chevron-right': ChevronRight, 'chevron-up': ChevronUp,
   cigarette: Cigarette, 'circle-alert': CircleAlert, 'circle-check': CircleCheck, clock: Clock, 'cloud-off': CloudOff,
   code: Code, coffee: Coffee, cookie: Cookie, 'corner-down-left': CornerDownLeft, dog: Dog, droplets: Droplets,

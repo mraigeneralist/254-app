@@ -39,6 +39,7 @@ export type Profile = Omit<Base, 'user_id'> & {
   name: string;
   onboarding_completed: boolean;
   settings: Partial<NotificationSettings>;
+  avatar_path?: string | null;
 };
 
 export type HabitKind = 'build' | 'break';

@@ -42,7 +42,12 @@ Deno.serve(async (req) => {
   const { data, error } = await admin.auth.getUser(jwt);
   if (error || !data.user) return json(401, { error: "Invalid or expired session" });
 
-  const { error: delError } = await admin.auth.admin.deleteUser(data.user.id);
+  // profile pictures live in storage (not covered by the table cascades) — remove them first
+  const uid = data.user.id;
+  const { data: files } = await admin.storage.from("avatars").list(uid, { limit: 1000 });
+  if (files?.length) await admin.storage.from("avatars").remove(files.map((f) => `${uid}/${f.name}`));
+
+  const { error: delError } = await admin.auth.admin.deleteUser(uid);
   if (delError) return json(500, { error: "Could not delete account" });
 
   return json(200, { deleted: true });

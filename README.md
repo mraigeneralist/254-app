@@ -16,7 +16,7 @@ Milestones at **30, 60, 90, 100, 150, 200, 250** and **254** days act as checkpo
 | **Tasks** | Quick add, week strip and month calendar with dots, overdue tasks roll into today, time and reminder per task, swipe to delete |
 | **Meditate** | 5 / 10 / 15 / custom (1–180) min timer that stays accurate with the screen locked, pause / resume / end early, chime + notification, session history |
 | **Note To Self** | Private journal with a calendar, multiple entries per day, autosaved drafts, past dates |
-| **Profile** | Stats, current streaks, longest streak, check-ins over the last 30 days, heatmap, meditation per week, milestones earned, built / broken / challenge history |
+| **Profile** | Profile photo (gallery, square crop, stored in Supabase Storage), stats, current streaks, longest streak, check-ins over the last 30 days, heatmap, meditation per week, milestones earned, built / broken / challenge history |
 | **Notifications** | Local reminders per habit (skipped once you've checked in), task reminders, daily "still waiting" summary, meditation finished, master switch |
 | **Offline** | Everything works offline after sign-in. Changes queue and sync when you're back online, with an "Offline / Syncing" indicator |
 | **Account** | Email + password, password reset by email, stays signed in, account deletion (removes all data) |
@@ -27,11 +27,11 @@ Milestones at **30, 60, 90, 100, 150, 200, 250** and **254** days act as checkpo
 |---|---|
 | App | [Expo](https://expo.dev) SDK 58 · React Native 0.88 (New Architecture) · TypeScript · development build (`expo-dev-client`) |
 | Navigation | `expo-router`, file-based routes in `src/app/` |
-| Backend | [Supabase](https://supabase.com): Postgres + Row Level Security, email/password auth, Edge Function for account deletion |
+| Backend | [Supabase](https://supabase.com): Postgres + Row Level Security, email/password auth, Storage (profile photos, per-user folders), Edge Function for account deletion |
 | Offline / sync | `expo-sqlite` local store + outbox queue → Supabase upserts; pull by server `synced_at` cursor; last write wins (server trigger) |
 | State | `zustand` |
 | UI | Cream Design System tokens as a typed theme (`src/theme/`), Urbanist font, Lucide icons, `react-native-reanimated`, `react-native-svg` |
-| Device | `expo-notifications`, `expo-haptics`, `expo-keep-awake`, `expo-audio`, `@react-native-community/netinfo` |
+| Device | `expo-image-picker` + `expo-image-manipulator` (profile photo), `expo-notifications`, `expo-haptics`, `expo-keep-awake`, `expo-audio`, `@react-native-community/netinfo` |
 | Tests | Jest (`jest-expo`): streak / milestone / challenge engine |
 
 ## Project structure

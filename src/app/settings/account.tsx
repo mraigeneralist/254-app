@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
-import { Avatar, Button } from '@/components/ds';
+import { Button } from '@/components/ds';
+import { AvatarEditor } from '@/components/AvatarEditor';
 import { Field, Group, Row } from '@/components/Form';
 import { AppBar, Screen } from '@/components/Screen';
 import { updateProfile } from '@/data/actions';
@@ -27,7 +28,7 @@ export default function Account() {
     <Screen header={<AppBar title="Account" close />} footer={<Button size="lg" fullWidth disabled={!name.trim() || name.trim() === profile.name} onPress={save}>Save changes</Button>}>
       <View style={{ paddingTop: 14, paddingHorizontal: 20, gap: 18 }}>
         <View style={{ alignItems: 'center', paddingVertical: 6 }}>
-          <Avatar name={name || email} size={84} />
+          <AvatarEditor name={name || email} size={84} />
         </View>
         <Field label="Name" value={name} onChangeText={setName} maxLength={60} autoComplete="name" />
         <Field label="Email" value={email} icon="mail" editable={false} hint="Your email is used to log in." />

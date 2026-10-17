@@ -81,6 +81,15 @@ await a.client.from('habits').update({ name: 'Stale name', updated_at: now }).eq
 const { data: lww } = await a.client.from('habits').select('name').eq('id', habitId).single();
 check('older edit does not overwrite a newer one (last write wins)', lww?.name === 'Newer name');
 
+// profile pictures: own folder only
+const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xd9]);
+const upOwn = await a.client.storage.from('avatars').upload(`${a.id}/test.jpg`, jpeg, { contentType: 'image/jpeg' });
+check('A can upload a profile photo to own folder', !upOwn.error);
+const upOther = await b.client.storage.from('avatars').upload(`${a.id}/evil.jpg`, jpeg, { contentType: 'image/jpeg' });
+check("B cannot upload into A's photo folder", Boolean(upOther.error));
+const delOther = await b.client.storage.from('avatars').remove([`${a.id}/test.jpg`]);
+check("B cannot delete A's photo", (delOther.data ?? []).length === 0);
+
 // anonymous (signed-out) client sees nothing
 const anon = createClient(URL_, KEY, { auth: { persistSession: false } });
 const { data: anonRows } = await anon.from('habits').select('*');

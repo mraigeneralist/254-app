@@ -17,10 +17,11 @@ type Props = {
   onBell?: () => void;
   /** small status shown next to the date (sync state) */
   status?: ReactNode;
+  avatarUri?: string | null;
 };
 
 /** Today header panel: white card rounded only at the bottom (32), under the status-bar strip. */
-export function TodayHeader({ dateLabel, name, summary, segment, onSegment, onBell, status }: Props) {
+export function TodayHeader({ dateLabel, name, summary, segment, onSegment, onBell, status, avatarUri }: Props) {
   const insets = useSafeAreaInsets();
   const challengesRef = useTourTarget('segChallenges');
   const [segW, setSegW] = useState(0);
@@ -35,7 +36,7 @@ export function TodayHeader({ dateLabel, name, summary, segment, onSegment, onBe
         <IconButton icon="bell" size={40} onPress={onBell} label="Notification settings" />
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 12, minHeight: 48 }}>
-        <Avatar name={name || '?'} size={48} />
+        <Avatar name={name || '?'} size={48} uri={avatarUri} />
         <View style={{ flex: 1 }}>
           <Text style={text.h2} numberOfLines={1}>{name ? `Hi, ${name.split(' ')[0]}!` : 'Hi there!'}</Text>
           <View style={{ flexDirection: 'row', gap: 12, marginTop: 4, flexWrap: 'wrap' }}>{summary}</View>

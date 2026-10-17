@@ -1,11 +1,12 @@
 import { useRouter, type Href } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import { Avatar, BarChart, Card, Icon, IconButton, type IconName } from '@/components/ds';
+import { BarChart, Card, Icon, IconButton, type IconName } from '@/components/ds';
 import { EmptyState } from '@/components/Feedback';
 import { ProgressBar } from '@/components/ProgressBar';
 import { StatusBarScrim } from '@/components/StatusBarScrim';
 import { useTabBarHeight } from '@/components/TabBar';
+import { AvatarEditor } from '@/components/AvatarEditor';
 import { useChallengeViews, useEmail, useHabitViews, useProfile } from '@/data/selectors';
 import { live, useData } from '@/data/store';
 import { challengeIcon, habitIcon } from '@/features/checkins';
@@ -20,7 +21,7 @@ function Stat({ v, l, icon, tone }: { v: string | number; l: string; icon: IconN
     <View style={{ flex: 1, backgroundColor: colors.surfaceCard, borderRadius: 20, padding: 14, boxShadow: shadow.xs }}>
       <Icon name={icon} size={18} color={tones[tone].d} />
       <Text style={[font(800, 22, 1), { color: colors.textPrimary, marginTop: 10 }]}>{v}</Text>
-      <Text style={[text.cap, { marginTop: 4 }]} numberOfLines={2}>{l}</Text>
+      <Text style={[text.cap, { marginTop: 6 }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.85}>{l}</Text>
     </View>
   );
 }
@@ -98,7 +99,7 @@ export default function ProfileScreen() {
           <IconButton icon="settings" size={40} label="Settings" onPress={() => router.push('/settings')} />
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-          <Avatar name={profile.name || email} size={68} />
+          <AvatarEditor name={profile.name || email} size={68} />
           <View style={{ flex: 1 }}>
             <Text style={text.h1} numberOfLines={1}>{profile.name || 'Your profile'}</Text>
             <Text style={[text.sm, { marginTop: 4 }]} numberOfLines={1}>{email}</Text>
@@ -114,8 +115,8 @@ export default function ProfileScreen() {
           </View>
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <Stat v={st.broken.length} l="Broken" icon="shield-check" tone="orange" />
-            <Stat v={`${st.challenges.active.length} · ${st.challenges.completed.length} · ${st.challenges.failed.length}`} l="Challenges: active · done · failed" icon="trophy" tone="yellow" />
-            <Stat v={num(st.meditationMinutes)} l={`Meditation min · ${st.meditationSessions} ${st.meditationSessions === 1 ? 'session' : 'sessions'}`} icon="flower-2" tone="purple" />
+            <Stat v={st.challenges.active.length} l="Challenges" icon="trophy" tone="yellow" />
+            <Stat v={num(st.meditationMinutes)} l="Meditation min" icon="flower-2" tone="purple" />
           </View>
         </View>
 
@@ -213,7 +214,7 @@ export default function ProfileScreen() {
           empty={nearestBreak ? `None yet. ${nearestBreak.habit.name} is ${254 - nearestBreak.state.current} days away.` : 'Addictions you break for 254 days land here.'}
         />
         <ListBlock
-          title="Challenges"
+          title={`Challenges · ${st.challenges.active.length} active · ${st.challenges.completed.length} done · ${st.challenges.failed.length} failed`}
           items={[...st.challenges.active, ...st.challenges.completed, ...st.challenges.failed].map((c) => ({
             key: c.challenge.id,
             name: c.challenge.name,
