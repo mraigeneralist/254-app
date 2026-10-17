@@ -52,3 +52,7 @@ supabase/.branches/
 
 # test output
 coverage/
+
+# local native module build output
+modules/*/android/build/
+modules/*/android/.cxx/
